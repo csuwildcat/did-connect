@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Web Boilerplate</title>
+  <title>DID Wallet</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -12,21 +12,29 @@
   <meta property="og:url" content="">
   <meta property="og:image" content="">
 
-  <link rel="manifest" href="site.webmanifest">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="apple-touch-icon" href="icon.png">
   <!-- Place favicon.ico in the root directory -->
 
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="wallet/css/index.css">
 
   <meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
 
-  
+  <button id="install">Install Wallet</button>
 
-  <script src="js/global.js"></script>
+  <script src="wallet.js"></script>
+  <script src="wallet/js/index.js"></script>
+  <script>
+
+    install.addEventListener('click', e => {
+      navigator.registerProtocolHandler('web+did', 'http://localhost:1337/?did-connect=%s', 'DID Wallet');
+    })
+  </script>
 </body>
 
 </html>
