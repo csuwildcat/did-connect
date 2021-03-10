@@ -1,0 +1,64 @@
+
+(function(){
+
+var connect;
+const protocol = 'web+did:';
+const blockedOrigins = {};
+
+function getRandomNumber() {
+  return crypto.getRandomValues(new Uint8Array(16)).join('');
+}
+
+const transactions = {};
+function sendMessage(message, options = {}){
+  return new Promise(function(resolve){
+    connect.then((postMessage, origin = '*') => {
+      this.transaction = transactions[getRandomNumber()] = {
+        message: message,
+        resolve: resolve
+      }
+      postMessage(message, origin); 
+    })
+  })
+}
+
+function handleMessage(event){
+  let message = JSON.parse(event.data);
+  let pending = transactions[message.id];
+  if (pending) pending.resolve(message);
+}
+
+
+if (self === top) {
+  connect = new Promise((resolve, reject) => {
+    let frame = document.createElement('iframe');
+        frame.src = protocol;
+        frame.addEventListener('load', e => {
+          resolve(frame.contentWindow.postMessage);
+        }, { once: true });
+    addEventListener('message', e => {
+      console.log(e);
+      handleMessage(e);
+    })
+    document.documentElement.appendChild(frame);
+  })
+  
+  sendMessage('["site connecting"]');
+
+}
+
+else if (self !== top && top === parent) {
+  connect = Promise.resolve(top.postMessage, document.referrer);
+  addEventListener('message', e => {
+    console.log(e);
+    if (e.source === top || e.origin === document.referrer || !blockedOrigins[e.origin]) {
+      handleMessage(e);
+    }
+  });
+  
+  sendMessage('["wallet connecting"]');
+  
+}
+
+    
+})()

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title>Test Site for DID Wallet</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="site/css/site.css">
+
+  <meta name="theme-color" content="#fafafa">
+
+  <script src="connect.js" wallets="foo, bar"></script>
+</head>
+
+<body>
+
+  <h1 id="welcome">Dwitter</h1>
+  
+  <button id="login">Login with your DID</button>
+
+  
+
+  <script>
+
+    login.addEventListener('click', async e => {
+      try {
+        let did = await navigator.did.requestDID(['ion']);
+        welcome.setAttribute('message', did);
+      }
+      catch (e){
+        alert('The wallet denied you!');
+      }
+    });
+
+  </script>
+
+</body>
+
+</html>
