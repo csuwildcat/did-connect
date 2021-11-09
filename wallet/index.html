@@ -8,10 +8,10 @@
 
   <body>
     Wallet Frame
+
     <script src="connect.js"></script>
 
     <script>
-
       addEventListener('protocolmessage', e => {
         if (confirm('Send a DID to ' + e.origin + '?')) {
           e.sendResponse('did:ion:123');

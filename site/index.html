@@ -23,25 +23,64 @@
   <meta name="theme-color" content="#fafafa">
 
   <script src="connect.js" wallets="foo, bar"></script>
+
 </head>
 
 <body>
 
   <h1 id="welcome">Dwitter</h1>
   
-  <button id="login">Login with your DID</button>
+<button id="login">Login with your DID</button>
 
+<button id="music_permissions">Request access to music</button>
+
+  <!-- <did-connect id="connect" href="/did-connect" action="requestDID">
+    <button type="button">Login with your DID</button>
+  </did-connect> -->
   
 
-  <script>
 
+  <script type="module">
+
+    import { UUID } from '../js/modules/uuid.js';
+
+    async function getDID(prompt){
+      let response = await navigator.did.requestDID({
+        challenge: UUID.v4(),
+        prompt: prompt,
+        methods: ['ion']
+      }).catch(e => console.log(e));
+      if (response?.did) welcome.setAttribute('message', response.did);
+    }
+
+    getDID();
+    
     login.addEventListener('click', async e => {
-      try {
-        let did = await navigator.did.requestDID(['ion']);
-        welcome.setAttribute('message', did);
+      let hasWallet = await navigator.did.agentConnected();
+      if (hasWallet) getDID(true);
+      else {
+        console.log('No wallet connected');
       }
-      catch (e){
-        alert('The wallet denied you!');
+    });
+
+    music_permissions.addEventListener('click', async e => {
+      let hasWallet = await navigator.did.agentConnected();
+      if (hasWallet) {
+        let response = await navigator.did.requestPermissions({
+          challenge: UUID.v4(),
+          requests: [
+            {
+              type: 'collections',
+              schemas: [
+                'https://schema.org/MusicPlaylist',
+                'https://schema.org/MusicRecording'
+              ]
+            }
+          ]
+        }).catch(e => console.log(e));
+      }
+      else {
+        console.log('No wallet connected');
       }
     });
 

@@ -13,7 +13,22 @@ const PORT = 1337;
 // Response to GET requests
 router.get('/', async (ctx) => {
   ctx.type = 'html';
-  ctx.body = await fs.createReadStream('wallet/index.html');
+  return new Promise(resolve => {
+    setTimeout(async () => {
+      ctx.body = await fs.createReadStream('wallet/index.html');
+      resolve();
+    }, 1000)
+  });
+});
+
+router.post('/', async (ctx) => {
+  ctx.type = 'html';
+  return new Promise(resolve => {
+    setTimeout(async () => {
+      ctx.body = await fs.createReadStream('wallet/index.html');
+      resolve();
+    }, 1000)
+  });
 });
 
 app.use(Static('./'));
